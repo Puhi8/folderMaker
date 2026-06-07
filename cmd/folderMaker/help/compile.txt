@@ -1,0 +1,28 @@
+Usage: folderMaker compile <template-dir> [out.json]
+
+Read a template directory and generate a config JSON file.
+
+A directory that contains a config file becomes a section: the user will be
+asked to choose among its subdirectories at runtime.
+A directory without a config file is always created.
+
+Config file names:
+  main.txt  config.txt  main  config
+
+Config file format (key: value, one per line, # for comments):
+  prompt: Which type of items?
+  multi:  true
+  flag:   items
+  header: ======= Title line =======
+  header: Second header line (repeat for more lines)
+
+Keys:
+  prompt   The question shown to the user.
+  multi    Set to "true" to allow selecting multiple choices at once.
+  flag     CLI flag name that can pre-answer this question.
+  header   A line printed above the choices (can appear multiple times).
+
+If [out.json] is omitted the JSON is written to stdout.
+
+Example:
+  folderMaker compile ./my-template adventure.json

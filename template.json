@@ -1,0 +1,85 @@
+{
+  "shared": {
+    "commonDirs": ["Notes", "References", "Exports"],
+
+    "subTypeQuestion": {
+      "header": ["What sub-type?"],
+      "prompt": "Enter choice: ",
+      "choices": ["Type A", "Type B", "Type C"],
+      "flag": "sub",
+      "on": [
+        ["SubA-1", "SubA-2"],
+        ["SubB-1", "SubB-2"],
+        null
+      ]
+    }
+  },
+
+  "base_dir": {
+    "questions": [
+      {
+        "prompt": "Date (YYYY_MM_DD): ",
+        "validate": "date",
+        "flag": "date"
+      },
+      {
+        "prompt": "Project name: ",
+        "flag": "name"
+      },
+      {
+        "id": "variant",
+        "header": ["Is this a special variant?"],
+        "prompt": "Enter choice (0 or 1): ",
+        "choices": ["No", "Yes"],
+        "values": ["", "-special"],
+        "flag": "v"
+      }
+    ],
+    "format": "{date} ({name}{variant})"
+  },
+
+  "create": ["Assets", "Exports"],
+
+  "sections": [
+    {
+      "header": ["Main category — which type applies?"],
+      "prompt": "Enter choice (0, 1, or 2): ",
+      "choices": ["None", "Type 1", "Type 2"],
+      "flag": "t",
+      "on": [
+        null,
+        {
+          "cd": "Type1",
+          "steps": [
+            { "ref": "commonDirs" },
+            { "ref": "subTypeQuestion" }
+          ]
+        },
+        {
+          "cd": "Type2",
+          "steps": [
+            ["SubDir-A", "SubDir-B"],
+            { "ref": "subTypeQuestion" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "header": ["Secondary category — pick one or more."],
+      "prompt": "Enter choice(s): ",
+      "choices": ["None", "Option A", "Option B", "Option C"],
+      "multi": true,
+      "flag": "s",
+      "on": [null, "SecA", "SecB", "SecC"]
+    },
+
+    {
+      "header": ["Simple yes/no section."],
+      "prompt": "Enter choice (0 or 1): ",
+      "choices": ["No", "Yes"],
+      "flag": "extra",
+      "on": [null, ["Extra-1", "Extra-2"]]
+    }
+  ]
+}

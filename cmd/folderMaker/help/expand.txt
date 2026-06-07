@@ -1,0 +1,16 @@
+Usage: folderMaker expand <config.json> <out-dir>
+
+Convert a config JSON back into a template directory structure.
+
+This is the inverse of "compile": running compile on the output directory
+should reproduce a config equivalent to the input JSON.
+
+Each section becomes a directory named after its flag (or "section_N" if no
+flag is set). Each choice becomes a subdirectory. Nested questions are written
+as sub-directories with their own config files.
+
+Note: shared refs in the config are not inlined — edit those sections of the
+template manually after expanding.
+
+Example:
+  folderMaker expand adventure.json ./my-template

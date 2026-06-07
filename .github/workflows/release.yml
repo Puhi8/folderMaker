@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          targets=(
+            "linux amd64"
+            "linux arm64"
+            "darwin amd64"
+            "darwin arm64"
+            "windows amd64"
+            "windows arm64"
+          )
+          for target in "${targets[@]}"; do
+            read -r goos goarch <<< "$target"
+            bin="dist/folderMaker-${goos}-${goarch}"
+            [[ "$goos" == "windows" ]] && bin="${bin}.exe"
+            CGO_ENABLED=0 GOOS=$goos GOARCH=$goarch \
+              go build -trimpath -ldflags="-s -w" -o "$bin" ./cmd/folderMaker/
+          done
+
+      - name: Package artifacts
+        run: |
+          cd dist
+          for f in folderMaker-linux-* folderMaker-darwin-*; do
+            tar -czf "${f}.tar.gz" "$f"
+          done
+          for f in folderMaker-windows-*.exe; do
+            zip -q "${f%.exe}.zip" "$f"
+          done
+          sha256sum ./*.tar.gz ./*.zip > checksums.txt
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.sha }}
+          name: ${{ github.event.head_commit.message }}
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/checksums.txt

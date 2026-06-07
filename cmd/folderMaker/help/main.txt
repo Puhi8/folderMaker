@@ -1,0 +1,21 @@
+Usage: folderMaker <config.json> [-flag value ...]
+       folderMaker compile <template-dir> [out.json]
+       folderMaker expand  <config.json>  <out-dir>
+       folderMaker help    [command]
+
+Run the adventure folder maker with a config JSON file.
+Any question that has a "flag" field can be answered via the command line
+instead of interactively.
+
+Flags:
+  -<flag> <value>    Supply an answer for the question with that flag name.
+                     If the value is invalid the tool falls back to prompting.
+
+Commands:
+  compile   Read a template directory and generate a config JSON.
+  expand    Read a config JSON and recreate the template directory structure.
+  help      Show help for a command.
+
+Examples:
+  folderMaker adventure.json
+  folderMaker adventure.json -date 2024_06_01 -name "Summer Trip" -c 1
